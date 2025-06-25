@@ -80,13 +80,13 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a46f407bea303fdea95cd587271856729"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bufdumplib_8h.html#a46f407bea303fdea95cd587271856729">bufdumplib_dump</a> (FILE *fp, const void *buf, size_t len, int flags)</td></tr>
-<tr class="memdesc:a46f407bea303fdea95cd587271856729"><td class="mdescLeft">&#160;</td><td class="mdescRight">Perform a hex dump of a binary memory buffer over the provided length.  <a href="bufdumplib_8h.html#a46f407bea303fdea95cd587271856729">More...</a><br /></td></tr>
+<tr class="memdesc:a46f407bea303fdea95cd587271856729"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a hex dump of a binary memory buffer over the specified length into a file pointer.  <a href="bufdumplib_8h.html#a46f407bea303fdea95cd587271856729">More...</a><br /></td></tr>
 <tr class="separator:a46f407bea303fdea95cd587271856729"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98c9b853718a4a661426f89207513931"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bufdumplib_8h.html#a98c9b853718a4a661426f89207513931">bufdumplib_diff</a> (FILE *fp, const void *b0, const void *b1, size_t len, int flags)</td></tr>
-<tr class="memdesc:a98c9b853718a4a661426f89207513931"><td class="mdescLeft">&#160;</td><td class="mdescRight">Perform a hex diff of two binary memory buffers over the provided length.  <a href="bufdumplib_8h.html#a98c9b853718a4a661426f89207513931">More...</a><br /></td></tr>
+<tr class="memdesc:a98c9b853718a4a661426f89207513931"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a hex diff of two binary memory buffers over the specified length into a file pointer.  <a href="bufdumplib_8h.html#a98c9b853718a4a661426f89207513931">More...</a><br /></td></tr>
 <tr class="separator:a98c9b853718a4a661426f89207513931"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a467b64205e3d98819aab1d18ca1dee40"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="bufdumplib_8h.html#a467b64205e3d98819aab1d18ca1dee40">bufdumplib_text</a> (FILE *fp, const void *buf, size_t len)</td></tr>
-<tr class="memdesc:a467b64205e3d98819aab1d18ca1dee40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dump a buffer into a comma-delimited hex byte array (e.g. for use in a C source file).  <a href="bufdumplib_8h.html#a467b64205e3d98819aab1d18ca1dee40">More...</a><br /></td></tr>
+<tr class="memdesc:a467b64205e3d98819aab1d18ca1dee40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a comma-delimited hex byte array (e.g. for use in C source) into a file pointer.  <a href="bufdumplib_8h.html#a467b64205e3d98819aab1d18ca1dee40">More...</a><br /></td></tr>
 <tr class="separator:a467b64205e3d98819aab1d18ca1dee40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -130,15 +130,18 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Perform a hex dump of a binary memory buffer over the provided length. </p>
+<p>Write a hex dump of a binary memory buffer over the specified length into a file pointer. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">fp</td><td>FILE pointer to which to write output </td></tr>
     <tr><td class="paramname">buf</td><td>Buffer data to dump </td></tr>
     <tr><td class="paramname">len</td><td>Length of buffer </td></tr>
-    <tr><td class="paramname">flags</td><td>1 skips all-zero lines (of 16 bytes)<br  />
- 2 skips all-zero groups (of 4 bytes)<br  />
- 4 skips individual zero bytes</td></tr>
+    <tr><td class="paramname">flags</td><td><ul>
+<li>1 skips all-zero lines (of 16 bytes)</li>
+<li>2 skips all-zero groups (of 4 bytes)</li>
+<li>4 skips individual zero bytes</li>
+</ul>
+</td></tr>
   </table>
   </dd>
 </dl>
@@ -190,16 +193,19 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Perform a hex diff of two binary memory buffers over the provided length. </p>
+<p>Write a hex diff of two binary memory buffers over the specified length into a file pointer. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">fp</td><td>FILE pointer to which to write output </td></tr>
     <tr><td class="paramname">b0</td><td>First buffer to compare (output on left) </td></tr>
     <tr><td class="paramname">b1</td><td>Second buffer to compare (output on right) </td></tr>
     <tr><td class="paramname">len</td><td>Length of buffer </td></tr>
-    <tr><td class="paramname">flags</td><td>1 skips identical lines (of 16 bytes)<br  />
- 2 skips identical groups (of 4 bytes)<br  />
- 4 skips identical bytes</td></tr>
+    <tr><td class="paramname">flags</td><td><ul>
+<li>1 skips identical lines (of 16 bytes)</li>
+<li>2 skips identical groups (of 4 bytes)</li>
+<li>4 skips identical bytes</li>
+</ul>
+</td></tr>
   </table>
   </dd>
 </dl>
@@ -239,7 +245,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Dump a buffer into a comma-delimited hex byte array (e.g. for use in a C source file). </p>
+<p>Write a comma-delimited hex byte array (e.g. for use in C source) into a file pointer. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">fp</td><td>FILE pointer to which to write output </td></tr>

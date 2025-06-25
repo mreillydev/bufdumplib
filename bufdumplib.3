@@ -13,15 +13,15 @@ bufdumplib \- This library provides a C API for hexadecimal dumps and diffs of b
 .ti -1c
 .RI "int \fBbufdumplib_dump\fP (FILE *fp, const void *buf, size_t len, int flags)"
 .br
-.RI "Perform a hex dump of a binary memory buffer over the provided length\&. "
+.RI "Write a hex dump of a binary memory buffer over the specified length into a file pointer\&. "
 .ti -1c
 .RI "int \fBbufdumplib_diff\fP (FILE *fp, const void *b0, const void *b1, size_t len, int flags)"
 .br
-.RI "Perform a hex diff of two binary memory buffers over the provided length\&. "
+.RI "Write a hex diff of two binary memory buffers over the specified length into a file pointer\&. "
 .ti -1c
 .RI "int \fBbufdumplib_text\fP (FILE *fp, const void *buf, size_t len)"
 .br
-.RI "Dump a buffer into a comma-delimited hex byte array (e\&.g\&. for use in a C source file)\&. "
+.RI "Write a comma-delimited hex byte array (e\&.g\&. for use in C source) into a file pointer\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -33,7 +33,7 @@ This library provides a C API for hexadecimal dumps and diffs of binary memory b
 .SS "int bufdumplib_dump (FILE * fp, const void * buf, size_t len, int flags)"
 
 .PP
-Perform a hex dump of a binary memory buffer over the provided length\&. 
+Write a hex dump of a binary memory buffer over the specified length into a file pointer\&. 
 .PP
 \fBParameters\fP
 .RS 4
@@ -43,11 +43,14 @@ Perform a hex dump of a binary memory buffer over the provided length\&.
 .br
 \fIlen\fP Length of buffer 
 .br
-\fIflags\fP 1 skips all-zero lines (of 16 bytes)
-.br
- 2 skips all-zero groups (of 4 bytes)
-.br
- 4 skips individual zero bytes
+\fIflags\fP 
+.IP "\(bu" 2
+1 skips all-zero lines (of 16 bytes)
+.IP "\(bu" 2
+2 skips all-zero groups (of 4 bytes)
+.IP "\(bu" 2
+4 skips individual zero bytes
+.PP
 .RE
 .PP
 \fBReturns\fP
@@ -59,7 +62,7 @@ On success, count of non-skipped bytes printed\&. On error, a negative value\&.
 .SS "int bufdumplib_diff (FILE * fp, const void * b0, const void * b1, size_t len, int flags)"
 
 .PP
-Perform a hex diff of two binary memory buffers over the provided length\&. 
+Write a hex diff of two binary memory buffers over the specified length into a file pointer\&. 
 .PP
 \fBParameters\fP
 .RS 4
@@ -71,11 +74,14 @@ Perform a hex diff of two binary memory buffers over the provided length\&.
 .br
 \fIlen\fP Length of buffer 
 .br
-\fIflags\fP 1 skips identical lines (of 16 bytes)
-.br
- 2 skips identical groups (of 4 bytes)
-.br
- 4 skips identical bytes
+\fIflags\fP 
+.IP "\(bu" 2
+1 skips identical lines (of 16 bytes)
+.IP "\(bu" 2
+2 skips identical groups (of 4 bytes)
+.IP "\(bu" 2
+4 skips identical bytes
+.PP
 .RE
 .PP
 \fBReturns\fP
@@ -87,7 +93,7 @@ On success, count of non-skipped bytes printed\&. On error, a negative value\&.
 .SS "int bufdumplib_text (FILE * fp, const void * buf, size_t len)"
 
 .PP
-Dump a buffer into a comma-delimited hex byte array (e\&.g\&. for use in a C source file)\&. 
+Write a comma-delimited hex byte array (e\&.g\&. for use in C source) into a file pointer\&. 
 .PP
 \fBParameters\fP
 .RS 4

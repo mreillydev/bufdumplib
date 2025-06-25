@@ -35,41 +35,44 @@
  */
 
 /**
- * @brief Perform a hex dump of a binary memory buffer over the provided length.
+ * @brief Write a hex dump of a binary memory buffer over the specified length
+ *        into a file pointer.
  *
  * @param fp FILE pointer to which to write output
  * @param buf Buffer data to dump
  * @param len Length of buffer
- * @param flags 1 skips all-zero lines (of 16 bytes)\n 
- *              2 skips all-zero groups (of 4 bytes)\n 
- *              4 skips individual zero bytes
+ * @param flags
+ *        - 1 skips all-zero lines (of 16 bytes)
+ *        - 2 skips all-zero groups (of 4 bytes)
+ *        - 4 skips individual zero bytes
  *
  * @return On success, count of non-skipped bytes printed. On error, a negative
- * value.
+ *         value.
  */
 int bufdumplib_dump(FILE *fp, const void *buf, size_t len, int flags);
 
 /**
- * @brief Perform a hex diff of two binary memory buffers over the provided
- *        length.
+ * @brief Write a hex diff of two binary memory buffers over the specified
+ *        length into a file pointer.
  *
  * @param fp FILE pointer to which to write output
  * @param b0 First buffer to compare (output on left)
  * @param b1 Second buffer to compare (output on right)
  * @param len Length of buffer
- * @param flags 1 skips identical lines (of 16 bytes)\n 
- *              2 skips identical groups (of 4 bytes)\n 
- *              4 skips identical bytes
+ * @param flags
+ *        - 1 skips identical lines (of 16 bytes)
+ *        - 2 skips identical groups (of 4 bytes)
+ *        - 4 skips identical bytes
  *
  * @return On success, count of non-skipped bytes printed. On error, a negative
- * value.
+ *         value.
  */
 int bufdumplib_diff(FILE *fp, const void *b0, const void *b1, size_t len,
                     int flags);
 
 /**
- * @brief Dump a buffer into a comma-delimited hex byte array (e.g. for use in
- *        a C source file).
+ * @brief Write a comma-delimited hex byte array (e.g. for use in C source)
+ *        into a file pointer.
  *
  * @param fp FILE pointer to which to write output
  * @param buf Buffer data to dump
