@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+
+Outdir=doxygen-output
+rm -rf $Outdir
+
+doxygen
+
+mv -i $Outdir/man/man3/bufdumplib.h.3 $Outdir/man/man3/bufdumplib.3
+sed -i -e "s/src\/bufdumplib\.h/bufdumplib/g" $Outdir/man/man3/bufdumplib.3
+cp $Outdir/man/man3/bufdumplib.3 .
+
+GithubDocs="docs"
+rm -rf $GithubDocs
+cp -r $Outdir/html/ $GithubDocs

@@ -1,0 +1,128 @@
+#!/bin/sh
+
+# Copyright 2025 Michael Reilly <mreilly@mreilly.dev>
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+# 3. Neither the names of the copyright holders nor the names of the
+#    contributors may be used to endorse or promote products derived from
+#    this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+# PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS
+# OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+set -e
+#set -x
+
+Outdir="output"
+
+# Text dump
+./bufdumptest > $Outdir/out.t0
+xxd -c 16 -g 4 data | sed -e "s/  .*//g" | cut -b 3- > $Outdir/out.t1
+diff $Outdir/out.t0 $Outdir/out.t1
+
+# Sparse dump
+./bufddtest -1 -dump sparse > $Outdir/out.s4
+xxd -a -c 16 -g 4 sparse | sed -e "s/  .*//g" | cut -b 3- | sed -e '/^$/d' | sed -e "/\*/d" -e "/000010: /d" -e "/000020: /d" -e "/0000b0: /d" -e "/0000c0: /d" -e  "/0001f0: /d" -e "/000200: /d" > $Outdir/out.s5
+diff $Outdir/out.s4 $Outdir/out.s5
+
+# Flag dumps
+i=0
+while [ $i -lt 8 ]; do
+    ./bufddtest -$i -dump rnddat > $Outdir/out.f$i
+    if [ $i -gt 0 ]; then
+        set +e
+        diff $Outdir/out.f0 $Outdir/out.f$i > $Outdir/tmpdiff
+        set -e
+        diff diff.f0-$i $Outdir/tmpdiff
+    fi
+    i=$((1+$i))
+done
+
+# Flag diffs
+i=0
+while [ $i -lt 8 ]; do
+    ./bufddtest -$i -diff rnddat rnddat.1 > $Outdir/out.d$i
+    if [ $i -gt 0 ]; then
+        compare=0
+        if [ $i -eq 3 ]; then
+            compare=1
+        elif [ $i -eq 5 ]; then
+            compare=1
+        elif [ $i -eq 7 ]; then
+            compare=1
+        elif [ $i -eq 6 ]; then
+            compare=2
+        fi
+        set +e
+        diff $Outdir/out.d$compare $Outdir/out.d$i > $Outdir/tmpdiff
+        set -e
+        diff diff.d$compare-$i $Outdir/tmpdiff
+    fi
+    i=$((1+$i))
+done
+
+# Random dumps
+i=0
+while [ $i -lt 10 ]; do
+    path="$Outdir/rndfile"
+    rm -f $path
+    ./randgen -f $path 1 262144
+    ./bufddtest -dump $path > $Outdir/out.r0
+    xxd -c 16 -g 4 $path | sed -e "s/  .*//g" | cut -b 3- > $Outdir/out.r1
+    diff $Outdir/out.r0 $Outdir/out.r1
+    ./bufddtest -text $path > $Outdir/out.r3
+    xxd -c 16 -i $path | sed -e "s/ //g" -e "/unsigned/d" -e "/{/d" -e "/}/d" > $Outdir/out.r4
+    diff $Outdir/out.r3 $Outdir/out.r4
+    i=$((1+$i))
+done
+
+# Text diff
+./bufdifftest > $Outdir/out.t2
+diff $Outdir/out.t2 diff.t3
+
+# Skip diff
+./bufddtest -5 -diff rnddat rnddat.1 > $Outdir/out.s6
+diff $Outdir/out.s6 diff.s7
+
+# Flag diffs
+i=0
+while [ $i -lt 8 ]; do
+    ./bufddtest -$i -diff rnddat rnddat.1 > $Outdir/out.d$i
+    if [ $i -gt 0 ]; then
+        compare=0
+        if [ $i -eq 3 ]; then
+            compare=1
+        elif [ $i -eq 5 ]; then
+            compare=1
+        elif [ $i -eq 7 ]; then
+            compare=1
+        elif [ $i -eq 6 ]; then
+            compare=2
+        fi
+        set +e
+        diff $Outdir/out.d$compare $Outdir/out.d$i > $Outdir/tmpdiff
+        set -e
+        diff diff.d$compare-$i $Outdir/tmpdiff
+    fi
+    i=$((1+$i))
+done
+
+# Complete
+printf "bufdumplib base tests completed successfully\n"
+exit 0

@@ -1,0 +1,109 @@
+.TH "bufdumplib" 3 "Wed Jun 25 2025" "bufdumplib" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+bufdumplib \- This library provides a C API for hexadecimal dumps and diffs of binary memory buffers\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBbufdumplib_dump\fP (FILE *fp, const void *buf, size_t len, int flags)"
+.br
+.RI "Perform a hex dump of a binary memory buffer over the provided length\&. "
+.ti -1c
+.RI "int \fBbufdumplib_diff\fP (FILE *fp, const void *b0, const void *b1, size_t len, int flags)"
+.br
+.RI "Perform a hex diff of two binary memory buffers over the provided length\&. "
+.ti -1c
+.RI "int \fBbufdumplib_text\fP (FILE *fp, const void *buf, size_t len)"
+.br
+.RI "Dump a buffer into a comma-delimited hex byte array (e\&.g\&. for use in a C source file)\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This library provides a C API for hexadecimal dumps and diffs of binary memory buffers\&. 
+
+
+.SH "Function Documentation"
+.PP 
+.SS "int bufdumplib_dump (FILE * fp, const void * buf, size_t len, int flags)"
+
+.PP
+Perform a hex dump of a binary memory buffer over the provided length\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfp\fP FILE pointer to which to write output 
+.br
+\fIbuf\fP Buffer data to dump 
+.br
+\fIlen\fP Length of buffer 
+.br
+\fIflags\fP 1 skips all-zero lines (of 16 bytes)
+.br
+ 2 skips all-zero groups (of 4 bytes)
+.br
+ 4 skips individual zero bytes
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+On success, count of non-skipped bytes printed\&. On error, a negative value\&. 
+.RE
+.PP
+
+.SS "int bufdumplib_diff (FILE * fp, const void * b0, const void * b1, size_t len, int flags)"
+
+.PP
+Perform a hex diff of two binary memory buffers over the provided length\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfp\fP FILE pointer to which to write output 
+.br
+\fIb0\fP First buffer to compare (output on left) 
+.br
+\fIb1\fP Second buffer to compare (output on right) 
+.br
+\fIlen\fP Length of buffer 
+.br
+\fIflags\fP 1 skips identical lines (of 16 bytes)
+.br
+ 2 skips identical groups (of 4 bytes)
+.br
+ 4 skips identical bytes
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+On success, count of non-skipped bytes printed\&. On error, a negative value\&. 
+.RE
+.PP
+
+.SS "int bufdumplib_text (FILE * fp, const void * buf, size_t len)"
+
+.PP
+Dump a buffer into a comma-delimited hex byte array (e\&.g\&. for use in a C source file)\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfp\fP FILE pointer to which to write output 
+.br
+\fIbuf\fP Buffer data to dump 
+.br
+\fIlen\fP Length of buffer
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+On success, count of byte array\&. On error, a negative value\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for bufdumplib from the source code\&.
