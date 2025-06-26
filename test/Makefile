@@ -24,9 +24,11 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+CC := clang
+
 all:
 	rm -f bufdumptest bufdifftest bufddtest randgen
-	clang -o bufdumptest -I../src bufdumptest.c ../src/*.c
-	clang -o bufdifftest -I../src bufdifftest.c ../src/*.c
-	clang -o bufddtest -I../src bufddtest.c ../src/*.c
-	clang -o randgen randgen.c
+	$(CC) -o bufdumptest -I../src bufdumptest.c ../src/*.c
+	$(CC) -o bufdifftest -I../src bufdifftest.c ../src/*.c
+	$(CC) -o bufddtest -I../src bufddtest.c ../src/*.c
+	$(CC) -o randgen randgen.c
