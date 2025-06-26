@@ -124,21 +124,20 @@ void randByteString(uintmax_t length)
         printf("%02X", buf[ix]);
 }
 
+// also defined in hexpeek randtests
+#define MajorReplace 1
+#define MajorInsert  2
+#define MajorAppend  3
+#define MajorHole    4
+#define MajorKill    5
+#define MajorMin     1
+#define MajorMax     5
+#define MajorAny     9
+
 // Generate commands for hexpeek testing
 void gencmds(uintmax_t major, uintmax_t cmdcnt,
              uintmax_t f0len, uintmax_t f1len)
 {
-    // also defined in hexpeek randtests
-    const uintmax_t MajorMin     = 1;
-    const uintmax_t MajorMax     = 5;
-    const uintmax_t MajorAny     = 9;
-
-    const uintmax_t MajorReplace = 1;
-    const uintmax_t MajorInsert  = 2;
-    const uintmax_t MajorAppend  = 3;
-    const uintmax_t MajorHole    = 4;
-    const uintmax_t MajorKill    = 5;
-
     const uintmax_t litmax = 6000;
     const uintmax_t holemax = 9000;
 
