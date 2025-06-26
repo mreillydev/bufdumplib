@@ -1,4 +1,4 @@
-.TH "bufdumplib" 3 "Wed Jun 25 2025" "bufdumplib" \" -*- nroff -*-
+.TH "bufdumplib" 3 "Thu Jun 26 2025" "bufdumplib" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -176,9 +176,9 @@ On success, count of non-skipped bytes printed\&. On error, a negative value\&.
 .nf
     uint8_t const chg[] = {
 0xfe,0xed,0xfa,0xce,0xbe,0xef,0xbe,0xef,   0,   0,   0,   0,   0,   0,   0,   0,
-                      ^^   ^^
+//                    ^^   ^^
    0,   0,0x03,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-            ^^
+//          ^^
    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
    0,0xde,0xad,0xfa,0xce,   0,   0,   0,   0,   0,   0,   0,0xde,0xad,0xfa,0xce,
     };
@@ -234,7 +234,7 @@ bufdumplib_diff(stdout, buf, chg, sizeof buf, \fB4\fP) with \fBflags=4\fP blanks
 .fi
 .PP
 .PP
-bufdumplib_diff(stdout, buf, chg, sizeof buf, \fB5\fP) with \fBflags=5\fP blanks lines and bytes (and thus groups) that are the same:
+bufdumplib_diff(stdout, buf, chg, sizeof buf, \fB7\fP) with \fBflags=7\fP (or \fB5\fP) blanks lines and bytes (and groups) that are the same:
 .br
  
 .PP

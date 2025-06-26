@@ -244,9 +244,9 @@ Functions</h2></td></tr>
  Now consider a new buffer with a few changed bytes:<br  />
  </p><div class="fragment"><div class="line">    uint8_t <span class="keyword">const</span> chg[] = {</div>
 <div class="line">0xfe,0xed,0xfa,0xce,0xbe,0xef,0xbe,0xef,   0,   0,   0,   0,   0,   0,   0,   0,</div>
-<div class="line">                      ^^   ^^</div>
+<div class="line"><span class="comment">//                    ^^   ^^</span></div>
 <div class="line">   0,   0,0x03,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,</div>
-<div class="line">            ^^</div>
+<div class="line"><span class="comment">//          ^^</span></div>
 <div class="line">   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,</div>
 <div class="line">   0,0xde,0xad,0xfa,0xce,   0,   0,   0,   0,   0,   0,   0,0xde,0xad,0xfa,0xce,</div>
 <div class="line">    };</div>
@@ -268,7 +268,7 @@ Functions</h2></td></tr>
 <div class="line">000010: ....00.. ........ ........ ........|....03.. ........ ........ ........</div>
 <div class="line">000020: ........ ........ ........ ........|........ ........ ........ ........</div>
 <div class="line">000030: ........ ........ ........ ........|........ ........ ........ ........</div>
-</div><!-- fragment --><p >bufdumplib_diff(stdout, buf, chg, sizeof buf, <b>5</b>) with <b>flags=5</b> blanks lines and bytes (and thus groups) that are the same:<br  />
+</div><!-- fragment --><p >bufdumplib_diff(stdout, buf, chg, sizeof buf, <b>7</b>) with <b>flags=7</b> (or <b>5</b>) blanks lines and bytes (and groups) that are the same:<br  />
  </p><div class="fragment"><div class="line">000000: ........ dead.... ........ ........|........ beef.... ........ ........</div>
 <div class="line">000010: ....00.. ........ ........ ........|....03.. ........ ........ ........</div>
 </div><!-- fragment --><p >This example can be found in examples/diffexample.c </p>
