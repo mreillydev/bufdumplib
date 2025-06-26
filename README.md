@@ -4,7 +4,7 @@ bufdumplib provides a C API for hexadecimal dumps and diffs of binary memory buf
 # Platforms
 This software is tested on 64 bit Debian and FreeBSD.
 
-# API Documentation
+# API Documentation and Examples
 [Doxygen header documentation](https://mreillydev.github.io/bufdumplib/bufdumplib_8h.html)
 
 # Testing
