@@ -192,7 +192,7 @@ int bufdumplib_diff(FILE *fp, const void *b0, const void *b1, size_t len,
  *
  * @return On success, count of byte array. On error, a negative value.
  *
- * **Examples**\n 
+ * **Example**\n 
 Given the same C data buffer as above:\n 
 \code{.c}
     uint8_t const buf[] = {
@@ -209,6 +209,9 @@ bufdumplib_text(stdout, buf, sizeof buf) outputs:\n
 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 0x00,0xde,0xad,0xfa,0xce,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xde,0xad,0xfa,0xce
 \endcode
+
+This example can be found in examples/textexample.c
+
  */
 int bufdumplib_text(FILE *fp, const void *buf, size_t len);
 
