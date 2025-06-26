@@ -48,6 +48,60 @@
  *
  * @return On success, count of non-skipped bytes printed. On error, a negative
  *         value.
+ *
+ * **Examples**\n 
+Given the following C data buffer:\n 
+\code{.c}
+    uint8_t const buf[] = {
+0xfe,0xed,0xfa,0xce,0xde,0xad,0xbe,0xef,   0,   0,   0,   0,   0,   0,   0,   0,
+   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+   0,0xde,0xad,0xfa,0xce,   0,   0,   0,   0,   0,   0,   0,0xde,0xad,0xfa,0xce,
+    };
+\endcode
+
+bufdumplib_dump(stdout, buf, sizeof buf, **0**) with **flags=0** outputs:\n 
+\code{.c}
+000000: feedface deadbeef 00000000 00000000
+000010: 00000000 00000000 00000000 00000000
+000020: 00000000 00000000 00000000 00000000
+000030: 00deadfa ce000000 00000000 deadface
+\endcode
+
+bufdumplib_dump(stdout, buf, sizeof buf, **1**) with **flags=1** skips the first
+and second lines since they contain only zeros:\n 
+\code{.c}
+000000: feedface deadbeef 00000000 00000000
+000030: 00deadfa ce000000 00000000 deadface
+\endcode
+
+bufdumplib_dump(stdout, buf, sizeof buf, **2**) with **flags=2** blanks the
+4 byte (32 bit) zero groups:\n 
+\code{.c}
+000000: feedface deadbeef ........ ........
+000010: ........ ........ ........ ........
+000020: ........ ........ ........ ........
+000030: 00deadfa ce000000 ........ deadface
+\endcode
+
+bufdumplib_dump(stdout, buf, sizeof buf, **4**) with **flags=4** blanks the
+remaining individual zero bytes in line 4 that the previous example left in
+numeric form:\n 
+\code{.c}
+000000: feedface deadbeef ........ ........
+000010: ........ ........ ........ ........
+000020: ........ ........ ........ ........
+000030: ..deadfa ce...... ........ deadface
+\endcode
+
+bufdumplib_dump(stdout, buf, sizeof buf, **3**) with **flags=3** blanks lines
+and groups that are zero, but preserves the individual zero bytes on line 4:\n 
+\code{.c}
+000000: feedface deadbeef ........ ........
+000030: 00deadfa ce000000 ........ deadface
+\endcode
+
+This example can be found in examples/dumpexample.c
  */
 int bufdumplib_dump(FILE *fp, const void *buf, size_t len, int flags);
 
@@ -66,6 +120,64 @@ int bufdumplib_dump(FILE *fp, const void *buf, size_t len, int flags);
  *
  * @return On success, count of non-skipped bytes printed. On error, a negative
  *         value.
+ *
+ * **Examples**\n 
+Now consider a new buffer with a few changed bytes:\n 
+\code{.c}
+    uint8_t const chg[] = {
+0xfe,0xed,0xfa,0xce,0xbe,0xef,0xbe,0xef,   0,   0,   0,   0,   0,   0,   0,   0,
+                      ^^   ^^
+   0,   0,0x03,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+            ^^
+   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+   0,0xde,0xad,0xfa,0xce,   0,   0,   0,   0,   0,   0,   0,0xde,0xad,0xfa,0xce,
+    };
+\endcode
+
+bufdumplib_diff(stdout, buf, chg, sizeof buf, **0**) with **flags=0** outputs a
+straight comparison with everything intact:\n 
+\code{.c}
+000000: feedface deadbeef 00000000 00000000|feedface beefbeef 00000000 00000000
+000010: 00000000 00000000 00000000 00000000|00000300 00000000 00000000 00000000
+000020: 00000000 00000000 00000000 00000000|00000000 00000000 00000000 00000000
+000030: 00deadfa ce000000 00000000 deadface|00deadfa ce000000 00000000 deadface
+\endcode
+
+bufdumplib_diff(stdout, buf, chg, sizeof buf, **1**) with **flags=1** skips the
+second and third lines since they are the same:\n
+\code{.c}
+000000: feedface deadbeef 00000000 00000000|feedface beefbeef 00000000 00000000
+000010: 00000000 00000000 00000000 00000000|00000300 00000000 00000000 00000000
+\endcode
+
+bufdumplib_diff(stdout, buf, chg, sizeof buf, **2**) with **flags=2** blanks the
+4 byte (32 bit) groups that are the same in each buffer:\n 
+\code{.c}
+000000: ........ deadbeef ........ ........|........ beefbeef ........ ........
+000010: 00000000 ........ ........ ........|00000300 ........ ........ ........
+000020: ........ ........ ........ ........|........ ........ ........ ........
+000030: ........ ........ ........ ........|........ ........ ........ ........
+\endcode
+
+bufdumplib_diff(stdout, buf, chg, sizeof buf, **4**) with **flags=4** blanks the
+remaining individual zero bytes in lines 0 and 1 that the previous example left
+in numeric form:\n 
+\code{.c}
+000000: ........ dead.... ........ ........|........ beef.... ........ ........
+000010: ....00.. ........ ........ ........|....03.. ........ ........ ........
+000020: ........ ........ ........ ........|........ ........ ........ ........
+000030: ........ ........ ........ ........|........ ........ ........ ........
+\endcode
+
+bufdumplib_diff(stdout, buf, chg, sizeof buf, **5**) with **flags=5** blanks
+lines and bytes (and thus groups) that are the same:\n 
+\code{.c}
+000000: ........ dead.... ........ ........|........ beef.... ........ ........
+000010: ....00.. ........ ........ ........|....03.. ........ ........ ........
+\endcode
+
+This example can be found in examples/diffexample.c
+
  */
 int bufdumplib_diff(FILE *fp, const void *b0, const void *b1, size_t len,
                     int flags);
@@ -79,6 +191,24 @@ int bufdumplib_diff(FILE *fp, const void *b0, const void *b1, size_t len,
  * @param len Length of buffer
  *
  * @return On success, count of byte array. On error, a negative value.
+ *
+ * **Examples**\n 
+Given the same C data buffer as above:\n 
+\code{.c}
+    uint8_t const buf[] = {
+0xfe,0xed,0xfa,0xce,0xde,0xad,0xbe,0xef,   0,   0,   0,   0,   0,   0,   0,   0,
+   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+   0,0xde,0xad,0xfa,0xce,   0,   0,   0,   0,   0,   0,   0,0xde,0xad,0xfa,0xce,
+    };
+\endcode
+bufdumplib_text(stdout, buf, sizeof buf) outputs:\n 
+\code{.c}
+0xfe,0xed,0xfa,0xce,0xde,0xad,0xbe,0xef,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+0x00,0xde,0xad,0xfa,0xce,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xde,0xad,0xfa,0xce
+\endcode
  */
 int bufdumplib_text(FILE *fp, const void *buf, size_t len);
 

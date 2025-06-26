@@ -145,7 +145,37 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>On success, count of non-skipped bytes printed. On error, a negative value. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>On success, count of non-skipped bytes printed. On error, a negative value.</dd></dl>
+<p><b>Examples</b><br  />
+ Given the following C data buffer:<br  />
+ </p><div class="fragment"><div class="line">    uint8_t <span class="keyword">const</span> buf[] = {</div>
+<div class="line">0xfe,0xed,0xfa,0xce,0xde,0xad,0xbe,0xef,   0,   0,   0,   0,   0,   0,   0,   0,</div>
+<div class="line">   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,</div>
+<div class="line">   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,</div>
+<div class="line">   0,0xde,0xad,0xfa,0xce,   0,   0,   0,   0,   0,   0,   0,0xde,0xad,0xfa,0xce,</div>
+<div class="line">    };</div>
+</div><!-- fragment --><p >bufdumplib_dump(stdout, buf, sizeof buf, <b>0</b>) with <b>flags=0</b> outputs:<br  />
+ </p><div class="fragment"><div class="line">000000: feedface deadbeef 00000000 00000000</div>
+<div class="line">000010: 00000000 00000000 00000000 00000000</div>
+<div class="line">000020: 00000000 00000000 00000000 00000000</div>
+<div class="line">000030: 00deadfa ce000000 00000000 deadface</div>
+</div><!-- fragment --><p >bufdumplib_dump(stdout, buf, sizeof buf, <b>1</b>) with <b>flags=1</b> skips the first and second lines since they contain only zeros:<br  />
+ </p><div class="fragment"><div class="line">000000: feedface deadbeef 00000000 00000000</div>
+<div class="line">000030: 00deadfa ce000000 00000000 deadface</div>
+</div><!-- fragment --><p >bufdumplib_dump(stdout, buf, sizeof buf, <b>2</b>) with <b>flags=2</b> blanks the 4 byte (32 bit) zero groups:<br  />
+ </p><div class="fragment"><div class="line">000000: feedface deadbeef ........ ........</div>
+<div class="line">000010: ........ ........ ........ ........</div>
+<div class="line">000020: ........ ........ ........ ........</div>
+<div class="line">000030: 00deadfa ce000000 ........ deadface</div>
+</div><!-- fragment --><p >bufdumplib_dump(stdout, buf, sizeof buf, <b>4</b>) with <b>flags=4</b> blanks the remaining individual zero bytes in line 4 that the previous example left in numeric form:<br  />
+ </p><div class="fragment"><div class="line">000000: feedface deadbeef ........ ........</div>
+<div class="line">000010: ........ ........ ........ ........</div>
+<div class="line">000020: ........ ........ ........ ........</div>
+<div class="line">000030: ..deadfa ce...... ........ deadface</div>
+</div><!-- fragment --><p >bufdumplib_dump(stdout, buf, sizeof buf, <b>3</b>) with <b>flags=3</b> blanks lines and groups that are zero, but preserves the individual zero bytes on line 4:<br  />
+ </p><div class="fragment"><div class="line">000000: feedface deadbeef ........ ........</div>
+<div class="line">000030: 00deadfa ce000000 ........ deadface</div>
+</div><!-- fragment --><p >This example can be found in examples/dumpexample.c </p>
 
 </div>
 </div>
@@ -209,7 +239,39 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>On success, count of non-skipped bytes printed. On error, a negative value. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>On success, count of non-skipped bytes printed. On error, a negative value.</dd></dl>
+<p><b>Examples</b><br  />
+ Now consider a new buffer with a few changed bytes:<br  />
+ </p><div class="fragment"><div class="line">    uint8_t <span class="keyword">const</span> chg[] = {</div>
+<div class="line">0xfe,0xed,0xfa,0xce,0xbe,0xef,0xbe,0xef,   0,   0,   0,   0,   0,   0,   0,   0,</div>
+<div class="line">                      ^^   ^^</div>
+<div class="line">   0,   0,0x03,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,</div>
+<div class="line">            ^^</div>
+<div class="line">   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,</div>
+<div class="line">   0,0xde,0xad,0xfa,0xce,   0,   0,   0,   0,   0,   0,   0,0xde,0xad,0xfa,0xce,</div>
+<div class="line">    };</div>
+</div><!-- fragment --><p >bufdumplib_diff(stdout, buf, chg, sizeof buf, <b>0</b>) with <b>flags=0</b> outputs a straight comparison with everything intact:<br  />
+ </p><div class="fragment"><div class="line">000000: feedface deadbeef 00000000 00000000|feedface beefbeef 00000000 00000000</div>
+<div class="line">000010: 00000000 00000000 00000000 00000000|00000300 00000000 00000000 00000000</div>
+<div class="line">000020: 00000000 00000000 00000000 00000000|00000000 00000000 00000000 00000000</div>
+<div class="line">000030: 00deadfa ce000000 00000000 deadface|00deadfa ce000000 00000000 deadface</div>
+</div><!-- fragment --><p >bufdumplib_diff(stdout, buf, chg, sizeof buf, <b>1</b>) with <b>flags=1</b> skips the second and third lines since they are the same:<br  />
+</p><div class="fragment"><div class="line">000000: feedface deadbeef 00000000 00000000|feedface beefbeef 00000000 00000000</div>
+<div class="line">000010: 00000000 00000000 00000000 00000000|00000300 00000000 00000000 00000000</div>
+</div><!-- fragment --><p >bufdumplib_diff(stdout, buf, chg, sizeof buf, <b>2</b>) with <b>flags=2</b> blanks the 4 byte (32 bit) groups that are the same in each buffer:<br  />
+ </p><div class="fragment"><div class="line">000000: ........ deadbeef ........ ........|........ beefbeef ........ ........</div>
+<div class="line">000010: 00000000 ........ ........ ........|00000300 ........ ........ ........</div>
+<div class="line">000020: ........ ........ ........ ........|........ ........ ........ ........</div>
+<div class="line">000030: ........ ........ ........ ........|........ ........ ........ ........</div>
+</div><!-- fragment --><p >bufdumplib_diff(stdout, buf, chg, sizeof buf, <b>4</b>) with <b>flags=4</b> blanks the remaining individual zero bytes in lines 0 and 1 that the previous example left in numeric form:<br  />
+ </p><div class="fragment"><div class="line">000000: ........ dead.... ........ ........|........ beef.... ........ ........</div>
+<div class="line">000010: ....00.. ........ ........ ........|....03.. ........ ........ ........</div>
+<div class="line">000020: ........ ........ ........ ........|........ ........ ........ ........</div>
+<div class="line">000030: ........ ........ ........ ........|........ ........ ........ ........</div>
+</div><!-- fragment --><p >bufdumplib_diff(stdout, buf, chg, sizeof buf, <b>5</b>) with <b>flags=5</b> blanks lines and bytes (and thus groups) that are the same:<br  />
+ </p><div class="fragment"><div class="line">000000: ........ dead.... ........ ........|........ beef.... ........ ........</div>
+<div class="line">000010: ....00.. ........ ........ ........|....03.. ........ ........ ........</div>
+</div><!-- fragment --><p >This example can be found in examples/diffexample.c </p>
 
 </div>
 </div>
@@ -254,8 +316,21 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>On success, count of byte array. On error, a negative value. </dd></dl>
-
+<dl class="section return"><dt>Returns</dt><dd>On success, count of byte array. On error, a negative value.</dd></dl>
+<p><b>Examples</b><br  />
+ Given the same C data buffer as above:<br  />
+ </p><div class="fragment"><div class="line">    uint8_t <span class="keyword">const</span> buf[] = {</div>
+<div class="line">0xfe,0xed,0xfa,0xce,0xde,0xad,0xbe,0xef,   0,   0,   0,   0,   0,   0,   0,   0,</div>
+<div class="line">   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,</div>
+<div class="line">   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,</div>
+<div class="line">   0,0xde,0xad,0xfa,0xce,   0,   0,   0,   0,   0,   0,   0,0xde,0xad,0xfa,0xce,</div>
+<div class="line">    };</div>
+</div><!-- fragment --><p> bufdumplib_text(stdout, buf, sizeof buf) outputs:<br  />
+ </p><div class="fragment"><div class="line">0xfe,0xed,0xfa,0xce,0xde,0xad,0xbe,0xef,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,</div>
+<div class="line">0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,</div>
+<div class="line">0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,</div>
+<div class="line">0x00,0xde,0xad,0xfa,0xce,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xde,0xad,0xfa,0xce</div>
+</div><!-- fragment --> 
 </div>
 </div>
 </div><!-- contents -->
