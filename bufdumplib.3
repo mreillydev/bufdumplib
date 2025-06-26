@@ -55,10 +55,88 @@ Write a hex dump of a binary memory buffer over the specified length into a file
 .PP
 \fBReturns\fP
 .RS 4
-On success, count of non-skipped bytes printed\&. On error, a negative value\&. 
+On success, count of non-skipped bytes printed\&. On error, a negative value\&.
 .RE
 .PP
+\fBExamples\fP
+.br
+ Given the following C data buffer:
+.br
+ 
+.PP
+.nf
+    uint8_t const buf[] = {
+0xfe,0xed,0xfa,0xce,0xde,0xad,0xbe,0xef,   0,   0,   0,   0,   0,   0,   0,   0,
+   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+   0,0xde,0xad,0xfa,0xce,   0,   0,   0,   0,   0,   0,   0,0xde,0xad,0xfa,0xce,
+    };
 
+.fi
+.PP
+.PP
+bufdumplib_dump(stdout, buf, sizeof buf, \fB0\fP) with \fBflags=0\fP outputs:
+.br
+ 
+.PP
+.nf
+000000: feedface deadbeef 00000000 00000000
+000010: 00000000 00000000 00000000 00000000
+000020: 00000000 00000000 00000000 00000000
+000030: 00deadfa ce000000 00000000 deadface
+
+.fi
+.PP
+.PP
+bufdumplib_dump(stdout, buf, sizeof buf, \fB1\fP) with \fBflags=1\fP skips the first and second lines since they contain only zeros:
+.br
+ 
+.PP
+.nf
+000000: feedface deadbeef 00000000 00000000
+000030: 00deadfa ce000000 00000000 deadface
+
+.fi
+.PP
+.PP
+bufdumplib_dump(stdout, buf, sizeof buf, \fB2\fP) with \fBflags=2\fP blanks the 4 byte (32 bit) zero groups:
+.br
+ 
+.PP
+.nf
+000000: feedface deadbeef \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+000010: \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+000020: \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+000030: 00deadfa ce000000 \&.\&.\&.\&.\&.\&.\&.\&. deadface
+
+.fi
+.PP
+.PP
+bufdumplib_dump(stdout, buf, sizeof buf, \fB4\fP) with \fBflags=4\fP blanks the remaining individual zero bytes in line 4 that the previous example left in numeric form:
+.br
+ 
+.PP
+.nf
+000000: feedface deadbeef \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+000010: \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+000020: \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+000030: \&.\&.deadfa ce\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. deadface
+
+.fi
+.PP
+.PP
+bufdumplib_dump(stdout, buf, sizeof buf, \fB3\fP) with \fBflags=3\fP blanks lines and groups that are zero, but preserves the individual zero bytes on line 4:
+.br
+ 
+.PP
+.nf
+000000: feedface deadbeef \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+000030: 00deadfa ce000000 \&.\&.\&.\&.\&.\&.\&.\&. deadface
+
+.fi
+.PP
+.PP
+This example can be found in examples/dumpexample\&.c 
 .SS "int bufdumplib_diff (FILE * fp, const void * b0, const void * b1, size_t len, int flags)"
 
 .PP
@@ -86,10 +164,88 @@ Write a hex diff of two binary memory buffers over the specified length into a f
 .PP
 \fBReturns\fP
 .RS 4
-On success, count of non-skipped bytes printed\&. On error, a negative value\&. 
+On success, count of non-skipped bytes printed\&. On error, a negative value\&.
 .RE
 .PP
+\fBExamples\fP
+.br
+ Now consider a new buffer with a few changed bytes:
+.br
+ 
+.PP
+.nf
+    uint8_t const chg[] = {
+0xfe,0xed,0xfa,0xce,0xbe,0xef,0xbe,0xef,   0,   0,   0,   0,   0,   0,   0,   0,
+                      ^^   ^^
+   0,   0,0x03,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+            ^^
+   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+   0,0xde,0xad,0xfa,0xce,   0,   0,   0,   0,   0,   0,   0,0xde,0xad,0xfa,0xce,
+    };
 
+.fi
+.PP
+.PP
+bufdumplib_diff(stdout, buf, chg, sizeof buf, \fB0\fP) with \fBflags=0\fP outputs a straight comparison with everything intact:
+.br
+ 
+.PP
+.nf
+000000: feedface deadbeef 00000000 00000000|feedface beefbeef 00000000 00000000
+000010: 00000000 00000000 00000000 00000000|00000300 00000000 00000000 00000000
+000020: 00000000 00000000 00000000 00000000|00000000 00000000 00000000 00000000
+000030: 00deadfa ce000000 00000000 deadface|00deadfa ce000000 00000000 deadface
+
+.fi
+.PP
+.PP
+bufdumplib_diff(stdout, buf, chg, sizeof buf, \fB1\fP) with \fBflags=1\fP skips the second and third lines since they are the same:
+.br
+.PP
+.nf
+000000: feedface deadbeef 00000000 00000000|feedface beefbeef 00000000 00000000
+000010: 00000000 00000000 00000000 00000000|00000300 00000000 00000000 00000000
+.fi
+.PP
+.PP
+bufdumplib_diff(stdout, buf, chg, sizeof buf, \fB2\fP) with \fBflags=2\fP blanks the 4 byte (32 bit) groups that are the same in each buffer:
+.br
+ 
+.PP
+.nf
+000000: \&.\&.\&.\&.\&.\&.\&.\&. deadbeef \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.|\&.\&.\&.\&.\&.\&.\&.\&. beefbeef \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+000010: 00000000 \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.|00000300 \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+000020: \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.|\&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+000030: \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.|\&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+
+.fi
+.PP
+.PP
+bufdumplib_diff(stdout, buf, chg, sizeof buf, \fB4\fP) with \fBflags=4\fP blanks the remaining individual zero bytes in lines 0 and 1 that the previous example left in numeric form:
+.br
+ 
+.PP
+.nf
+000000: \&.\&.\&.\&.\&.\&.\&.\&. dead\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.|\&.\&.\&.\&.\&.\&.\&.\&. beef\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+000010: \&.\&.\&.\&.00\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.|\&.\&.\&.\&.03\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+000020: \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.|\&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+000030: \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.|\&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+
+.fi
+.PP
+.PP
+bufdumplib_diff(stdout, buf, chg, sizeof buf, \fB5\fP) with \fBflags=5\fP blanks lines and bytes (and thus groups) that are the same:
+.br
+ 
+.PP
+.nf
+000000: \&.\&.\&.\&.\&.\&.\&.\&. dead\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.|\&.\&.\&.\&.\&.\&.\&.\&. beef\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+000010: \&.\&.\&.\&.00\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.|\&.\&.\&.\&.03\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&. \&.\&.\&.\&.\&.\&.\&.\&.
+
+.fi
+.PP
+.PP
+This example can be found in examples/diffexample\&.c 
 .SS "int bufdumplib_text (FILE * fp, const void * buf, size_t len)"
 
 .PP
@@ -106,10 +262,38 @@ Write a comma-delimited hex byte array (e\&.g\&. for use in C source) into a fil
 .PP
 \fBReturns\fP
 .RS 4
-On success, count of byte array\&. On error, a negative value\&. 
+On success, count of byte array\&. On error, a negative value\&.
 .RE
 .PP
+\fBExamples\fP
+.br
+ Given the same C data buffer as above:
+.br
+ 
+.PP
+.nf
+    uint8_t const buf[] = {
+0xfe,0xed,0xfa,0xce,0xde,0xad,0xbe,0xef,   0,   0,   0,   0,   0,   0,   0,   0,
+   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+   0,0xde,0xad,0xfa,0xce,   0,   0,   0,   0,   0,   0,   0,0xde,0xad,0xfa,0xce,
+    };
 
+.fi
+.PP
+ bufdumplib_text(stdout, buf, sizeof buf) outputs:
+.br
+ 
+.PP
+.nf
+0xfe,0xed,0xfa,0xce,0xde,0xad,0xbe,0xef,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+0x00,0xde,0xad,0xfa,0xce,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xde,0xad,0xfa,0xce
+
+.fi
+.PP
+ 
 .SH "Author"
 .PP 
 Generated automatically by Doxygen for bufdumplib from the source code\&.
