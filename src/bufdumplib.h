@@ -126,9 +126,9 @@ Now consider a new buffer with a few changed bytes:\n
 \code{.c}
     uint8_t const chg[] = {
 0xfe,0xed,0xfa,0xce,0xbe,0xef,0xbe,0xef,   0,   0,   0,   0,   0,   0,   0,   0,
-                      ^^   ^^
+//                    ^^   ^^
    0,   0,0x03,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-            ^^
+//          ^^
    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
    0,0xde,0xad,0xfa,0xce,   0,   0,   0,   0,   0,   0,   0,0xde,0xad,0xfa,0xce,
     };
@@ -169,8 +169,8 @@ in numeric form:\n
 000030: ........ ........ ........ ........|........ ........ ........ ........
 \endcode
 
-bufdumplib_diff(stdout, buf, chg, sizeof buf, **5**) with **flags=5** blanks
-lines and bytes (and thus groups) that are the same:\n 
+bufdumplib_diff(stdout, buf, chg, sizeof buf, **7**) with **flags=7** (or **5**)
+blanks lines and bytes (and groups) that are the same:\n 
 \code{.c}
 000000: ........ dead.... ........ ........|........ beef.... ........ ........
 000010: ....00.. ........ ........ ........|....03.. ........ ........ ........
