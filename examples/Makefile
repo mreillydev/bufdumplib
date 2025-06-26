@@ -24,8 +24,10 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+CC := clang
+
 all:
 	rm -f dumpexample diffexample textexample
-	clang -o dumpexample -I../src dumpexample.c ../src/*.c
-	clang -o diffexample -I../src diffexample.c ../src/*.c
-	clang -o textexample -I../src textexample.c ../src/*.c
+	$(CC) -o dumpexample -I../src dumpexample.c ../src/*.c
+	$(CC) -o diffexample -I../src diffexample.c ../src/*.c
+	$(CC) -o textexample -I../src textexample.c ../src/*.c
