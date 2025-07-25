@@ -24,7 +24,7 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-CC := clang
+CC ?= clang
 
 all:
 	rm -f bufdumptest bufdifftest bufddtest randgen
